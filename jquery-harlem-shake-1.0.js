@@ -893,6 +893,27 @@
       onEnd: function(){}
     },conf);
 
+
+    var elementInViewport = function(el) {
+      var top = el.offsetTop;
+      var left = el.offsetLeft;
+      var width = el.offsetWidth;
+      var height = el.offsetHeight;
+
+      while(el.offsetParent) {
+        el = el.offsetParent;
+        top += el.offsetTop;
+        left += el.offsetLeft;
+      }
+
+      return (
+          top >= window.pageYOffset &&
+              left >= window.pageXOffset &&
+              (top + height) <= (window.pageYOffset + window.innerHeight) &&
+              (left + width) <= (window.pageXOffset + window.innerWidth)
+          );
+    }
+
     var shakeAbleNodes = this.find(':visible:not("body")').toArray(),
         styleTag = $('<link />').attr({'href':conf.css_file, 'rel':'stylesheet'}),
         audio = new buzz.sound(conf.audio_file,{
@@ -905,11 +926,11 @@
     $(shakeAbleNodes).each(function(idx,item){
 
       if(!$('body').has(jQuery(item)) ||
-          //$(item).css('display')!='block' ||
           $('body').get(0)==$(item).get(0) ||
           $(item).height() == 0 ||
           $(item).width() == 0 ||
           $(item).siblings().length==0 ||
+          !elementInViewport(item) ||
           self[0]==item
       ){
         shakeAbleNodes.splice(shakeAbleNodes.indexOf(item),1);
