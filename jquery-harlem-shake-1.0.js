@@ -1020,7 +1020,9 @@
       }
     });
 
-    var firstNode = shakeAbleNodes.shift();
+    var firstNode = shakeAbleNodes.pop();
+    var allNodes = jQuery('*');
+
     audio.bindOnce("play",function(evt){
 
       setTimeout(function(){
@@ -1030,7 +1032,7 @@
       },300);
 
       setTimeout(function(){
-        $(shakeAbleNodes).each(function(id,item){
+        $(allNodes).each(function(id,item){
           $(item).addClass(conf.cls_speed_list[~~(Math.random() * conf.cls_speed_list.length)])
                  .addClass(conf.cls_list[~~(Math.random() * conf.cls_list.length)]);
         });
