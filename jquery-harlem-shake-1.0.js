@@ -1022,7 +1022,7 @@
 
     $('body').append(styleTag);
     audio.play();
-
+    audio.mute();
     return this;
   };
 
