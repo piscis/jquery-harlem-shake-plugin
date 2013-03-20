@@ -1,7 +1,7 @@
 # jQuery - Harlem Shake - plugin
 
 Let´s your content dance to the sound of the [http://en.wikipedia.org/wiki/Harlem_Shake_(meme)](Harlem Shake).
-See the **[http://piscis.github.com/jquery-harlem-shake-plugin/demo/index.html](demo)** for a working example.
+See the **[demo](http://piscis.github.com/jquery-harlem-shake-plugin/demo/index.html)** for a working example.
 
 ## Basic usage:
 Here is an example how to integrate this in your site.
