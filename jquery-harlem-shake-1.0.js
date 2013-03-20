@@ -980,7 +980,6 @@
           $('body').get(0)==$(item).get(0) ||
           $(item).height() == 0 ||
           $(item).width() == 0 ||
-          $(item).is('input') ||
           $(item).is(':in-viewport')==false ||
           $(item).siblings().length==0 ||
           self[0]==item
