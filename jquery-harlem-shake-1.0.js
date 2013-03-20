@@ -961,12 +961,6 @@
           loop: conf.loop
         });
 
-    var MIN_HEIGHT = 30;
-    var MIN_WIDTH = 30;
-    var MAX_HEIGHT = 350;
-    var MAX_WIDTH = 350;
-
-
     function posY(elm) {
       var test = elm;
       var top = 0;
@@ -1021,7 +1015,7 @@
     });
 
     var firstNode = shakeAbleNodes.pop();
-    var allNodes = jQuery('*');
+    var allNodes = jQuery(':visible:not("body"):in-viewport');
 
     audio.bindOnce("play",function(evt){
 
@@ -1030,7 +1024,7 @@
                     .addClass(conf.cls_speed_list[~~(Math.random() * conf.cls_speed_list.length)])
                     .addClass(conf.cls_list[0]);
       },300);
-
+      
       setTimeout(function(){
         $(allNodes).each(function(id,item){
           $(item).addClass(conf.cls_speed_list[~~(Math.random() * conf.cls_speed_list.length)])
@@ -1057,7 +1051,6 @@
 
     $('body').append(styleTag);
     audio.play();
-    audio.mute();
     return this;
   };
 
