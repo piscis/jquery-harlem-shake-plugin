@@ -905,7 +905,7 @@
     $(shakeAbleNodes).each(function(idx,item){
 
       if(!$('body').has(jQuery(item)) ||
-          $(item).css('display')!='block' ||
+          //$(item).css('display')!='block' ||
           $('body').get(0)==$(item).get(0) ||
           $(item).height() == 0 ||
           $(item).width() == 0 ||
