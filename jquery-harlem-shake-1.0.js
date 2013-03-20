@@ -893,15 +893,30 @@
       onEnd: function(){}
     },conf);
 
-    var shakeAbleNodes = this.find(':visible').toArray(),
-        styleTag = jQuery('<link />').attr({'href':conf.css_file, 'rel':'stylesheet'}),
-        firstNode = shakeAbleNodes.shift(),
+    var shakeAbleNodes = this.find(':visible:not("body")').toArray(),
+        styleTag = $('<link />').attr({'href':conf.css_file, 'rel':'stylesheet'}),
         audio = new buzz.sound(conf.audio_file,{
           formats: conf.audio_formats,
           preload: true,
           autoplay: false,
           loop: conf.loop
         });
+
+    $(shakeAbleNodes).each(function(idx,item){
+
+      if(!$('body').has(jQuery(item)) ||
+          $(item).css('display')!='block' ||
+          $('body').get(0)==$(item).get(0) ||
+          $(item).height() == 0 ||
+          $(item).width() == 0 ||
+          $(item).siblings().length==0 ||
+          self[0]==item
+      ){
+        shakeAbleNodes.splice(shakeAbleNodes.indexOf(item),1);
+      }
+    });
+
+    var firstNode = shakeAbleNodes.shift();
 
     audio.bindOnce("play",function(evt){
 
@@ -935,7 +950,7 @@
       }
     });
 
-    jQuery('body').append(styleTag);
+    $('body').append(styleTag);
     audio.play();
 
     return this;
