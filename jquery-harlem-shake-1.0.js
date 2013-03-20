@@ -1024,7 +1024,7 @@
                     .addClass(conf.cls_speed_list[~~(Math.random() * conf.cls_speed_list.length)])
                     .addClass(conf.cls_list[0]);
       },300);
-      
+
       setTimeout(function(){
         $(allNodes).each(function(id,item){
           $(item).addClass(conf.cls_speed_list[~~(Math.random() * conf.cls_speed_list.length)])
