@@ -952,14 +952,27 @@
       onEnd: function(){}
     },conf);
 
-    var shakeAbleNodes = this.find(':visible:not("body"):in-viewport').toArray(),
-        styleTag = $('<link />').attr({'href':conf.css_file, 'rel':'stylesheet'}),
-        audio = new buzz.sound(conf.audio_file,{
-          formats: conf.audio_formats,
-          preload: true,
-          autoplay: false,
-          loop: conf.loop
-        });
+    var styleTag = $('<link />').attr({'href':conf.css_file, 'rel':'stylesheet'}),
+      audio = new buzz.sound(conf.audio_file, {
+        formats: conf.audio_formats,
+        preload: true,
+        autoplay: false,
+        loop: conf.loop
+      });
+
+    var all = this.find(' *:not(:has("*"))'), maxDepth=0, deepest = [];
+
+    all.each(function() {
+      var depth = $(this).parents().length||0;
+      if(depth>maxDepth) {
+        deepest = [this];
+        maxDepth = depth;
+      } else if(depth==maxDepth) {
+        deepest.push(this);
+      }
+    });
+
+    var shakeAbleNodes = deepest;
 
     $(shakeAbleNodes).each(function(idx,item){
 
@@ -967,13 +980,14 @@
           $('body').get(0)==$(item).get(0) ||
           $(item).height() == 0 ||
           $(item).width() == 0 ||
+          $(item).is(':in-viewport')==false ||
           $(item).siblings().length==0 ||
           self[0]==item
       ){
         shakeAbleNodes.splice(shakeAbleNodes.indexOf(item),1);
       }
     });
-
+    
     var firstNode = shakeAbleNodes.shift();
 
     audio.bindOnce("play",function(evt){
