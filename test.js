@@ -7,7 +7,7 @@ javascript:(function(){
     if ( !done && (!this.readyState || this.readyState === "loaded" || this.readyState === "complete")){
 
       var s2=document.createElement('script');
-      s2.setAttribute('src','http://piscis.testdrive.cc/jquery-harlem-shake-plugin/jquery-harlem-shake-1.0.js');
+      s2.setAttribute('src','http://piscis.testdrive.cc/jquery-harlem-shake-plugin/jquery-harlem-shake-1.0.js?adsf=asdfasd');
       document.getElementsByTagName('body')[0].appendChild(s2);
       var done = false;
 

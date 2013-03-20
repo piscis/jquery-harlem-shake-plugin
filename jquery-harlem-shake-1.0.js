@@ -960,7 +960,7 @@
         loop: conf.loop
       });
 
-    var all = this.find(' *:not(:has("*"))'), maxDepth=0, deepest = [];
+    var all = jQuery('body *:not(:has("*"))'), maxDepth=0, deepest = [];
 
     all.each(function() {
       var depth = $(this).parents().length||0;
