@@ -980,6 +980,7 @@
           $('body').get(0)==$(item).get(0) ||
           $(item).height() == 0 ||
           $(item).width() == 0 ||
+          $(item).is('input') ||
           $(item).is(':in-viewport')==false ||
           $(item).siblings().length==0 ||
           self[0]==item
@@ -987,7 +988,7 @@
         shakeAbleNodes.splice(shakeAbleNodes.indexOf(item),1);
       }
     });
-    
+
     var firstNode = shakeAbleNodes.shift();
 
     audio.bindOnce("play",function(evt){
@@ -1009,9 +1010,7 @@
     audio.bind('ended',function(evt) {
 
       if(conf.loop==false) {
-
         $('.'+conf.cls_first).removeClass(conf.cls_first);
-
         $(conf.cls_speed_list.concat(conf.cls_list)).each(function(idx,item){
           $('.'+item).removeClass(item);
         });
