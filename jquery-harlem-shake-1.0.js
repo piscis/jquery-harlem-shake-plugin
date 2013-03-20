@@ -952,27 +952,15 @@
       onEnd: function(){}
     },conf);
 
-    var styleTag = $('<link />').attr({'href':conf.css_file, 'rel':'stylesheet'}),
-      audio = new buzz.sound(conf.audio_file, {
-        formats: conf.audio_formats,
-        preload: true,
-        autoplay: false,
-        loop: conf.loop
-      });
+    var shakeAbleNodes = this.find(':visible:not("body"):in-viewport').toArray(),
+        styleTag = $('<link />').attr({'href':conf.css_file, 'rel':'stylesheet'}),
+        audio = new buzz.sound(conf.audio_file,{
+          formats: conf.audio_formats,
+          preload: true,
+          autoplay: false,
+          loop: conf.loop
+        });
 
-    var all = jQuery('body *:not(:has("*"))'), maxDepth=0, deepest = [];
-
-    all.each(function() {
-      var depth = $(this).parents().length||0;
-      if(depth>maxDepth) {
-        deepest = [this];
-        maxDepth = depth;
-      } else if(depth==maxDepth) {
-        deepest.push(this);
-      }
-    });
-
-    var shakeAbleNodes = deepest;
 
     $(shakeAbleNodes).each(function(idx,item){
 
@@ -989,7 +977,6 @@
     });
 
     var firstNode = shakeAbleNodes.shift();
-
     audio.bindOnce("play",function(evt){
 
       setTimeout(function(){
@@ -1009,7 +996,9 @@
     audio.bind('ended',function(evt) {
 
       if(conf.loop==false) {
+
         $('.'+conf.cls_first).removeClass(conf.cls_first);
+
         $(conf.cls_speed_list.concat(conf.cls_list)).each(function(idx,item){
           $('.'+item).removeClass(item);
         });
