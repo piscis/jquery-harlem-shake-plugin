@@ -961,13 +961,20 @@
           loop: conf.loop
         });
 
+    var MIN_HEIGHT = 30;
+    var MIN_WIDTH = 30;
+    var MAX_HEIGHT = 350;
+    var MAX_WIDTH = 350;
+
 
     $(shakeAbleNodes).each(function(idx,item){
 
       if(!$('body').has(jQuery(item)) ||
           $('body').get(0)==$(item).get(0) ||
-          $(item).height() == 0 ||
-          $(item).width() == 0 ||
+          $(item).height() < 30 ||
+          $(item).width() < 30 ||
+          $(item).height() > 350 ||
+          $(item).width() > 350 ||
           $(item).is(':in-viewport')==false ||
           $(item).siblings().length==0 ||
           self[0]==item
