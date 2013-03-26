@@ -949,11 +949,20 @@
       cls_flash: 'jq-hs-flash',
       cls_first: 'jq-hs-first',
       cls_speed_list: ['jq-hs-fast'],
-      cls_list: ['jq-hs-wobble','jq-hs-shake','jq-hs-bounceIn','jq-hs-wobble'],
+      cls_list: ['jq-hs-wobble','jq-hs-shake','jq-hs-bounceIn'],
       onEnd: function(){}
     },conf);
 
-    var shakeAbleNodes = this.find(':visible:not("body"):in-viewport').toArray(),
+
+    var tagList = [
+            'address', 'blockquote', 'center', 'li', 'div', 'dir','dl',
+            'fieldset','form','h1','ul','ol','h2','h3','h4','h5','h6','hr',
+            'pre','table','tr','td','th','tfoot','font','thead',
+            'select','input','img','textarea','a','button','p','span'
+    ];
+
+
+    var shakeAbleNodes = this.find(tagList.join(',')).toArray(),
         styleTag = $('<link />').attr({'href':conf.css_file, 'rel':'stylesheet'}),
         audio = new buzz.sound(conf.audio_file,{
           formats: conf.audio_formats,
@@ -996,29 +1005,40 @@
 
       return (y >= st && y <= (vpH + st));
     }
-
-
+    //alert('foo');
     $(shakeAbleNodes).each(function(idx,item){
 
       if(!$('body').has(jQuery(item)) ||
           $('body').get(0)==$(item).get(0) ||
-          $(item).height() < 30 ||
-          $(item).width() < 30 ||
+          $(item).height() < 15 ||
+          $(item).width() < 15 ||
           $(item).height() > 350 ||
           $(item).width() > 350 ||
           $(item).is(':in-viewport')==false ||
-          $(item).siblings().length==0 ||
-          !isVisible(item) ||
-          self[0]==item
+          //$(item).siblings().length==0 ||
+          !isVisible(item)
+          //self[0]==item
       ){
         shakeAbleNodes.splice(shakeAbleNodes.indexOf(item),1);
       }
     });
 
-    var firstNode = shakeAbleNodes.shift();
-    //var allNodes = jQuery(':visible:not("body"):in-viewport');
-    allNodes = shakeAbleNodes;
 
+    function findFirstNode(nodes) {
+
+        var node = jQuery(nodes).sort(function(a, b){
+
+            var areaA = $(a).width();
+            var areaB = $(b).width();
+
+            return (areaA < areaB && $(a).height() > 20) ? 1 : -1;
+        }).first();
+
+        return (node.length>0 ? node : nodes.first());
+    }
+
+    var firstNode = findFirstNode(shakeAbleNodes);
+    var allNodes = shakeAbleNodes;
 
     audio.bindOnce("play",function(evt){
 
