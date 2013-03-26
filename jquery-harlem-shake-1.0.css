@@ -1,5 +1,18 @@
 /* .im_drunk, .im_baked, .im_trippin, .im_blown */
 
+
+.jq-hs-flash {
+  display:block;
+  position: absolute;
+  top:0px;
+  left: 0px;
+  bottom:0px;
+  z-index:999999999999999;
+  background: #fff;
+  height: 100%;
+  width: 100%;
+}
+
 .mw-strobe_light {
   position: fixed;
   width: 100%;

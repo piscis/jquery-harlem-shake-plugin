@@ -1,3 +1,62 @@
+/*
+ * Viewport - jQuery selectors for finding elements in viewport
+ *
+ * Copyright (c) 2008-2009 Mika Tuupola
+ *
+ * Licensed under the MIT license:
+ *   http://www.opensource.org/licenses/mit-license.php
+ *
+ * Project home:
+ *  http://www.appelsiini.net/projects/viewport
+ *
+ */
+;(function($) {
+
+  $.belowthefold = function(element, settings) {
+    var fold = $(window).height() + $(window).scrollTop();
+    return fold <= $(element).offset().top - settings.threshold;
+  };
+
+  $.abovethetop = function(element, settings) {
+    var top = $(window).scrollTop();
+    return top >= $(element).offset().top + $(element).height() - settings.threshold;
+  };
+
+  $.rightofscreen = function(element, settings) {
+    var fold = $(window).width() + $(window).scrollLeft();
+    return fold <= $(element).offset().left - settings.threshold;
+  };
+
+  $.leftofscreen = function(element, settings) {
+    var left = $(window).scrollLeft();
+    return left >= $(element).offset().left + $(element).width() - settings.threshold;
+  };
+
+  $.inviewport = function(element, settings) {
+    return !$.rightofscreen(element, settings) && !$.leftofscreen(element, settings) && !$.belowthefold(element, settings) && !$.abovethetop(element, settings);
+  };
+
+  $.extend($.expr[':'], {
+    "below-the-fold": function(a, i, m) {
+      return $.belowthefold(a, {threshold : 0});
+    },
+    "above-the-top": function(a, i, m) {
+      return $.abovethetop(a, {threshold : 0});
+    },
+    "left-of-screen": function(a, i, m) {
+      return $.leftofscreen(a, {threshold : 0});
+    },
+    "right-of-screen": function(a, i, m) {
+      return $.rightofscreen(a, {threshold : 0});
+    },
+    "in-viewport": function(a, i, m) {
+      return $.inviewport(a, {threshold : 0});
+    }
+  });
+
+
+})(jQuery);
+
 ;(function($){
 
 // ----------------------------------------------------------------------------
@@ -887,13 +946,14 @@
       loop: false,
       audio_file: 'harlemshake',
       audio_formats: ['ogg'],
+      cls_flash: 'jq-hs-flash',
       cls_first: 'jq-hs-first',
       cls_speed_list: ['jq-hs-fast'],
       cls_list: ['jq-hs-wobble','jq-hs-shake','jq-hs-bounceIn','jq-hs-wobble'],
       onEnd: function(){}
     },conf);
 
-    var shakeAbleNodes = this.find(':visible:not("body")').toArray(),
+    var shakeAbleNodes = this.find(':visible:not("body"):in-viewport').toArray(),
         styleTag = $('<link />').attr({'href':conf.css_file, 'rel':'stylesheet'}),
         audio = new buzz.sound(conf.audio_file,{
           formats: conf.audio_formats,
@@ -902,14 +962,53 @@
           loop: conf.loop
         });
 
+    function posY(elm) {
+      var test = elm;
+      var top = 0;
+      while (!!test) {
+        top += test.offsetTop;
+        test = test.offsetParent;
+      }
+      return top;
+    }
+
+    function viewPortHeight() {
+      var de = document.documentElement;
+      if (!!window.innerWidth) {
+        return window.innerHeight;
+      } else if (de && !isNaN(de.clientHeight)) {
+        return de.clientHeight;
+      }
+      return 0;
+    }
+
+    function scrollY() {
+      if (window.pageYOffset) {
+        return window.pageYOffset;
+      }
+      return Math.max(document.documentElement.scrollTop, document.body.scrollTop);
+    }
+
+    var vpH = viewPortHeight();
+    var st = scrollY();
+    function isVisible(node) {
+      var y = posY(node);
+
+      return (y >= st && y <= (vpH + st));
+    }
+
+
     $(shakeAbleNodes).each(function(idx,item){
 
       if(!$('body').has(jQuery(item)) ||
-          $(item).css('display')!='block' ||
           $('body').get(0)==$(item).get(0) ||
-          $(item).height() == 0 ||
-          $(item).width() == 0 ||
+          $(item).height() < 30 ||
+          $(item).width() < 30 ||
+          $(item).height() > 350 ||
+          $(item).width() > 350 ||
+          $(item).is(':in-viewport')==false ||
           $(item).siblings().length==0 ||
+          !isVisible(item) ||
           self[0]==item
       ){
         shakeAbleNodes.splice(shakeAbleNodes.indexOf(item),1);
@@ -917,6 +1016,9 @@
     });
 
     var firstNode = shakeAbleNodes.shift();
+    //var allNodes = jQuery(':visible:not("body"):in-viewport');
+    allNodes = shakeAbleNodes;
+
 
     audio.bindOnce("play",function(evt){
 
@@ -927,7 +1029,15 @@
       },300);
 
       setTimeout(function(){
-        $(shakeAbleNodes).each(function(id,item){
+        jQuery('body').prepend('<div class="'+conf.cls_flash+'"></div>');
+        jQuery('.'+conf.cls_flash).fadeOut('fast',function(){
+          jQuery('.'+conf.cls_flash).remove();
+        });
+
+      },14500);
+
+      setTimeout(function(){
+        $(allNodes).each(function(id,item){
           $(item).addClass(conf.cls_speed_list[~~(Math.random() * conf.cls_speed_list.length)])
                  .addClass(conf.cls_list[~~(Math.random() * conf.cls_list.length)]);
         });
@@ -948,12 +1058,12 @@
       if(typeof conf.onEnd === 'function') {
         conf.onEnd.call(self);
       }
+
     });
 
     $('body').append(styleTag);
     audio.play();
-
     return this;
   };
 
-})( jQuery );
+})(jQuery);
